@@ -2,7 +2,7 @@ var express = require('express');
 var router = express.Router();
 
 //hostname:port/users
-router.use('/users', require('./users'));
+router.use('/api/v1/users', require('./users'));
 //hostname:port/api/v1/books
 router.use('/api/v1/books', require('./books'));
 router.use('/api/v1/authors', require('./authors'));
