@@ -7,7 +7,11 @@ var bookSchema = new mongoose.Schema({
         required: true
     },
     price:Number,
-    author:String,
+    author:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:'author',
+        require:true
+    },
     isDelete:{
         type:Boolean,
         default:false
