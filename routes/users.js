@@ -4,17 +4,16 @@ var userModel = require('../schemas/user')
 var ResHelper = require('../helper/ResponseHandle');
 var Validator = require('../validators/user');
 const { validationResult } = require('express-validator');
-
-const config = require('../configs/config');
 const protect = require('../middleware/protect');
+const checkRole = require('../middleware/checkRole');
 
+router.get('/', protect, checkRole("modifier","admin"),
+  async function (req, res, next) {
+    let users = await userModel.find({}).exec();
+    ResHelper.ResponseSend(res, true, 200, users)
+  });
 
-router.get('/', protect, async function (req, res, next) {
-  let users = await userModel.find({}).exec();
-  ResHelper.ResponseSend(res, true, 200, users)
-});
-
-router.get('/:id', protect,async function (req, res, next) {
+router.get('/:id', protect, async function (req, res, next) {
   try {
     let user = await userModel.find({ _id: req.params.id }).exec();
     ResHelper.RenderRes(res, true, 200, user)

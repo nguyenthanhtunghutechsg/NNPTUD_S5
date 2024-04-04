@@ -2,6 +2,7 @@ var mongoose = require("mongoose");
 var bcrypt = require("bcrypt");
 var jwt = require('jsonwebtoken')
 var configs = require('../configs/config')
+var crypto = require('crypto');
 
 var userSchema = new mongoose.Schema({
     username: {
@@ -17,11 +18,15 @@ var userSchema = new mongoose.Schema({
         type: Boolean,
         default: true
     },
-    email: String
+    email: String,
+    ResetPasswordToken: String,
+    ResetPasswordExp: String
 }, { timestamps: true })
 
 userSchema.pre('save', function () {
-    this.password = bcrypt.hashSync(this.password, 10);
+    if (this.isModified('password')) {
+        this.password = bcrypt.hashSync(this.password, 10);
+    }
 })
 
 userSchema.methods.getJWT = function () {
@@ -29,6 +34,11 @@ userSchema.methods.getJWT = function () {
         expiresIn: configs.EXP_JWT
     });
     return token;
+}
+userSchema.methods.genTokenResetPassword = function () {
+    this.ResetPasswordToken = crypto.randomBytes(30).toString('hex');
+    this.ResetPasswordExp = Date.now() + 60 * 1000 * 10;
+    return this.ResetPasswordToken;
 }
 
 module.exports = new mongoose.model('user', userSchema);
