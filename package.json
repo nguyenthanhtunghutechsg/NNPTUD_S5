@@ -10,13 +10,16 @@
     "cookie-parser": "~1.4.4",
     "debug": "~2.6.9",
     "express": "~4.16.1",
+    "express-async-errors": "^3.1.1",
     "express-validator": "^7.0.1",
     "hbs": "~4.0.4",
     "http-errors": "~1.6.3",
+    "i": "^0.3.7",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.2.1",
     "morgan": "~1.9.1",
     "nodemailer": "^6.9.13",
-    "nodemon": "^3.1.0"
+    "nodemon": "^3.1.0",
+    "npm": "^10.5.2"
   }
 }

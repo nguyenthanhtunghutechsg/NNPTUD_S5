@@ -6,11 +6,21 @@ var Validator = require('../validators/user');
 const { validationResult } = require('express-validator');
 var bcrypt = require('bcrypt');
 const protect = require('../middleware/protect');
-const sendmail =require('../helper/sendmail')
+const sendmail = require('../helper/sendmail')
 
 router.get('/me', protect, async function (req, res, next) {
   ResHelper.ResponseSend(res, true, 200, req.user)
 });
+router.post('/changepassword', protect, async function (req, res, next) {
+  if(!bcrypt.compareSync(req.body.oldpassword,req.user.password)){
+    ResHelper.ResponseSend(res, false, 404, "password khong dung");
+    return;
+  }
+  let user = req.user;
+  user.password = req.body.newpassword;
+  await user.save();
+  ResHelper.ResponseSend(res, true, 200, "doi pass thanh cong");
+})
 
 router.post('/ForgotPassword', async function (req, res, next) {
   let user = await userModel.findOne({
@@ -21,9 +31,9 @@ router.post('/ForgotPassword', async function (req, res, next) {
   }
   let token = user.genTokenResetPassword();
   await user.save();
-  let url = `http://127.0.0.1:3000/api/v1/auth/ResetPassword/${token}`;
+  let url = `http://127.0.0.1:64994/resetpassword.html?token=${token}`;
   try {
-    await sendmail(user.email,url);
+    await sendmail(user.email, url);
     ResHelper.ResponseSend(res, true, 200, "gui mail thanh cong")
   } catch (error) {
     ResHelper.ResponseSend(res, false, 404, error)
